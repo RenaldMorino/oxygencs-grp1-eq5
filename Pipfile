@@ -8,6 +8,8 @@ requests = "*"
 signalrcore = "*"
 
 [dev-packages]
+pre-commit = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.8"
@@ -15,4 +17,4 @@ python_version = "3.8"
 [scripts]
 start = "python src/main.py"
 test = "# To implement"
-lint = "# To implement"
+lint = "pylint src/ test/"
