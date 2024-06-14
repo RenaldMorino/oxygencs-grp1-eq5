@@ -19,6 +19,22 @@ Install the project's dependencies :
 pipenv install
 ```
 
+Install the pre-commit hook to lint and format commits :
+
+```bash
+pipenv pre-commit install
+```
+
+if the `pipenv` command does not work, you can try with these commands instead :
+
+```bash
+python3 -m pipenv --python /the/python3/binary/location install
+
+python3 -m pipenv --python /the/python3/binary/location run pre-commit install
+```
+
+On linux, the default python3 path is : `/usr/bin/python3`
+
 ## Setup
 
 You need to setup the following variables inside the App class:
