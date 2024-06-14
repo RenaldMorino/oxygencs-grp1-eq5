@@ -1,1 +1,22 @@
 ## To implement
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black
+-   repo: https://github.com/pylint-dev/pylint
+    rev: v3.2.3
+    hooks:
+    -   id: pylint
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+            "--disable=C0114,C0115,C0116,R0903", # Remove some checks
+          ]
