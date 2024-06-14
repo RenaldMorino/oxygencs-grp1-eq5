@@ -20,3 +20,14 @@ repos:
             "-sn", # Don't display the score
             "--disable=C0114,C0115,C0116,R0903", # Remove some checks
           ]
+-   repo: local
+    hooks:
+    -   id: unittest
+        name: unittest
+        entry: python3 -m unittest
+        language: system
+        pass_filenames: false
+        args:
+          [
+            "discover"
+          ]
