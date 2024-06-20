@@ -37,7 +37,7 @@ On linux, the default python3 path is : `/usr/bin/python3`
 
 ## Setup
 
-You need to setup the following variables inside the App class:
+You need to setup the following variables inside `src/.env` file:
 
 - HOST: The host of the sensor hub and HVAC system.
 - TOKEN: The token for authenticating requests.
