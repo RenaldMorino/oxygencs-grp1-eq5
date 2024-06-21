@@ -6,10 +6,12 @@ name = "pypi"
 [packages]
 requests = "*"
 signalrcore = "*"
+python-dotenv = "*"
 
 [dev-packages]
 pre-commit = "*"
 pylint = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
