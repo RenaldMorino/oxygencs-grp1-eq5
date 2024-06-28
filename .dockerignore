@@ -1,0 +1,11 @@
+.dockerignore
+.gitignore
+.pre-commit-config.yaml
+Dockerfile
+LICENSE
+README.md
+*/.env
+
+.git/
+.github/
+test/
