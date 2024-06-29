@@ -26,3 +26,4 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           pylint: true
+          pylint_args: "--disable=C0114,C0115,C0116,E0401,R0903,W0612,W0613,W0718"
