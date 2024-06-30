@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Install pipenv and other dependencies
-        run: pip install pipenv pylint
+        run: pip install pipenv pylint black
       - name: Run tests
         run: |
           pipenv install --dev
@@ -27,3 +27,6 @@ jobs:
         with:
           pylint: true
           pylint_args: "--disable=C0114,C0115,C0116,E0401,R0903,W0612,W0613,W0718"
+      - name: Run formatter
+        run: |
+          python -m black src/ test/
