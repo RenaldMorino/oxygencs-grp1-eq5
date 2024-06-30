@@ -48,7 +48,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: 191180611497/oxygencs-grp1-eq5
+          images: 191180611401/oxygencs-grp1-eq5
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v5
