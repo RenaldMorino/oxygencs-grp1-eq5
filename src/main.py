@@ -1,3 +1,6 @@
+import os
+import sys
+from dotenv import load_dotenv
 from signalrcore.hub_connection_builder import HubConnectionBuilder
 import logging
 import requests
@@ -10,12 +13,31 @@ class App:
         self._hub_connection = None
         self.TICKS = 10
 
-        # To be configured by your team
-        self.HOST = None  # Setup your host here
-        self.TOKEN = None  # Setup your token here
-        self.T_MAX = None  # Setup your max temperature here
-        self.T_MIN = None  # Setup your min temperature here
-        self.DATABASE_URL = None  # Setup your database here
+        # Checking if .env file exists
+        SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+        if not (os.path.exists(os.path.join(SRC_DIR, "../.env"))):
+            sys.exit("Missing .env file! Please create one at the root of the api project.")
+        
+        # Loading the environment variables and .env ones
+        load_dotenv()
+
+        # Cheking if GITHUB_TOKEN variable is set
+        if (os.getenv("HOST") == None):
+            sys.exit("HOST variable is not set in .env file.")
+        if (os.getenv("TOKEN") == None):
+            sys.exit("TOKEN variable is not set in .env file.")
+        if (os.getenv("T_MAX") == None):
+            sys.exit("T_MAX variable is not set in .env file.")
+        if (os.getenv("T_MIN") == None):
+            sys.exit("T_MIN variable is not set in .env file.")
+        if (os.getenv("DATABASE_URL") == None):
+            sys.exit("DATABASE_URL variable is not set in .env file.")
+
+        self.HOST = os.getenv("HOST")
+        self.TOKEN = os.getenv("TOKEN")
+        self.T_MAX = os.getenv("T_MAX")
+        self.T_MIN = os.getenv("T_MIN")
+        self.DATABASE_URL = os.getenv("DATABASE_URL")
 
     def __del__(self):
         if self._hub_connection != None:
