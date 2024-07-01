@@ -32,7 +32,6 @@ jobs:
           python -m black src/ test/
 
   build_push_image:
-    needs: build
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
