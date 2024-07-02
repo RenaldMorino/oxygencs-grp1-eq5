@@ -1,8 +1,11 @@
 import json
 import logging
 import time
-from signalrcore.hub_connection_builder import HubConnectionBuilder
+from urllib.parse import urlparse
 import requests
+import psycopg2
+from psycopg2 import OperationalError, DatabaseError
+from signalrcore.hub_connection_builder import HubConnectionBuilder
 from env_variables import EnvVariables
 
 
@@ -18,9 +21,36 @@ class App:
         self.t_min = EnvVariables.get_t_min()
         self.database_url = EnvVariables.get_db_url()
 
+        self.connection = None
+        self.connect_to_database()
+
+    def connect_to_database(self):
+
+        parsed_url = urlparse(self.database_url)
+        db_username = parsed_url.username
+        db_password = parsed_url.password
+        db_name = parsed_url.path[1:]
+        db_hostname = parsed_url.hostname
+        db_port = parsed_url.port
+
+        try:
+            self.connection = psycopg2.connect(
+                user=db_username,
+                password=db_password,
+                host=db_hostname,
+                port=db_port,
+                database=db_name,
+            )
+            print("Connection to the database established successfully.")
+        except (OperationalError, DatabaseError) as error:
+            print(f"Error connecting to the database: {error}")
+
     def __del__(self):
         if self._hub_connection is not None:
             self._hub_connection.stop()
+        if self.connection is not None:
+            self.connection.close()
+            print("PostgreSQL connection is closed.")
 
     def start(self):
         """Start Oxygen CS."""
@@ -80,11 +110,17 @@ class App:
     def save_event_to_database(self, timestamp, temperature):
         """Save sensor data into database."""
         try:
-            # To implement
-            pass
-        except requests.exceptions.RequestException as e:
-            # To implement
-            pass
+            cursor = self.connection.cursor()
+            query = """
+                INSERT INTO hvac_data (date_received, temperature)
+                VALUES (%s, %s);
+            """
+            cursor.execute(query, (timestamp, temperature))
+            self.connection.commit()
+            cursor.close()
+            print(f"Data saved to database: {timestamp} - {temperature}")
+        except (OperationalError, DatabaseError) as error:
+            print(f"Error saving data to the database: {error}")
 
 
 if __name__ == "__main__":
