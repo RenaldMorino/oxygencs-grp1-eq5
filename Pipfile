@@ -6,13 +6,17 @@ name = "pypi"
 [packages]
 requests = "*"
 signalrcore = "*"
+python-dotenv = "*"
 
 [dev-packages]
+pre-commit = "*"
+pylint = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 start = "python src/main.py"
-test = "# To implement"
-lint = "# To implement"
+test = "python -m unittest discover"
+lint = "pylint src/ test/"

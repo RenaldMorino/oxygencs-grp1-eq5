@@ -1,46 +1,25 @@
-import os
-import sys
-from dotenv import load_dotenv
-from signalrcore.hub_connection_builder import HubConnectionBuilder
-import logging
-import requests
 import json
+import logging
 import time
+from signalrcore.hub_connection_builder import HubConnectionBuilder
+import requests
+from env_variables import EnvVariables
 
 
 class App:
     def __init__(self):
         self._hub_connection = None
-        self.TICKS = 10
+        self.ticks = 10
 
-        # Checking if .env file exists
-        SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-        if not (os.path.exists(os.path.join(SRC_DIR, "../.env"))):
-            sys.exit("Missing .env file! Please create one at the root of the api project.")
-        
-        # Loading the environment variables and .env ones
-        load_dotenv()
-
-        # Cheking if GITHUB_TOKEN variable is set
-        if (os.getenv("HOST") == None):
-            sys.exit("HOST variable is not set in .env file.")
-        if (os.getenv("TOKEN") == None):
-            sys.exit("TOKEN variable is not set in .env file.")
-        if (os.getenv("T_MAX") == None):
-            sys.exit("T_MAX variable is not set in .env file.")
-        if (os.getenv("T_MIN") == None):
-            sys.exit("T_MIN variable is not set in .env file.")
-        if (os.getenv("DATABASE_URL") == None):
-            sys.exit("DATABASE_URL variable is not set in .env file.")
-
-        self.HOST = os.getenv("HOST")
-        self.TOKEN = os.getenv("TOKEN")
-        self.T_MAX = os.getenv("T_MAX")
-        self.T_MIN = os.getenv("T_MIN")
-        self.DATABASE_URL = os.getenv("DATABASE_URL")
+        # To be configured by your team
+        self.host = EnvVariables.get_host()
+        self.token = EnvVariables.get_token()
+        self.t_max = EnvVariables.get_t_max()
+        self.t_min = EnvVariables.get_t_min()
+        self.database_url = EnvVariables.get_db_url()
 
     def __del__(self):
-        if self._hub_connection != None:
+        if self._hub_connection is not None:
             self._hub_connection.stop()
 
     def start(self):
@@ -55,7 +34,7 @@ class App:
         """Configure hub connection and subscribe to sensor data events."""
         self._hub_connection = (
             HubConnectionBuilder()
-            .with_url(f"{self.HOST}/SensorHub?token={self.TOKEN}")
+            .with_url(f"{self.host}/SensorHub?token={self.token}")
             .configure_logging(logging.INFO)
             .with_automatic_reconnect(
                 {
@@ -87,14 +66,14 @@ class App:
 
     def take_action(self, temperature):
         """Take action to HVAC depending on current temperature."""
-        if float(temperature) >= float(self.T_MAX):
+        if float(temperature) >= float(self.t_max):
             self.send_action_to_hvac("TurnOnAc")
-        elif float(temperature) <= float(self.T_MIN):
+        elif float(temperature) <= float(self.t_min):
             self.send_action_to_hvac("TurnOnHeater")
 
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
-        r = requests.get(f"{self.HOST}/api/hvac/{self.TOKEN}/{action}/{self.TICKS}")
+        r = requests.get(f"{self.host}/api/hvac/{self.token}/{action}/{self.ticks}")
         details = json.loads(r.text)
         print(details, flush=True)
 
