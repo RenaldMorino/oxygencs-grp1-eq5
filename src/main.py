@@ -10,6 +10,7 @@ from env_variables import EnvVariables
 
 
 class App:
+    # pylint: disable=too-many-instance-attributes
     def __init__(self):
         self._hub_connection = None
         self.ticks = 10
