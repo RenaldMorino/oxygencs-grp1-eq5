@@ -5,6 +5,7 @@ Dockerfile
 LICENSE
 README.md
 */.env
+*/__pycache__/
 
 .git/
 .github/
