@@ -25,12 +25,21 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/oxygencs-grp1-eq5
-      - name: Build and push Docker image
+      - name: Build and push Docker image (versionned)
         id: push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/oxygencs-grp1-eq5:1.${{ github.run_number }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image (latest)
+        id: push_latest
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/oxygencs-grp1-eq5:latest
           labels: ${{ steps.meta.outputs.labels }}
