@@ -1,12 +1,16 @@
 import json
 import logging
 import time
-from signalrcore.hub_connection_builder import HubConnectionBuilder
+from urllib.parse import urlparse
 import requests
+import psycopg2
+from psycopg2 import OperationalError, DatabaseError
+from signalrcore.hub_connection_builder import HubConnectionBuilder
 from env_variables import EnvVariables
 
 
 class App:
+    # pylint: disable=too-many-instance-attributes
     def __init__(self):
         self._hub_connection = None
         self.ticks = 10
@@ -18,17 +22,52 @@ class App:
         self.t_min = EnvVariables.get_t_min()
         self.database_url = EnvVariables.get_db_url()
 
-    def __del__(self):
+        self.connection = None
+        self.connect_to_database()
+
+    def connect_to_database(self):
+        parsed_url = urlparse(self.database_url)
+        db_username = parsed_url.username
+        db_password = parsed_url.password
+        db_name = parsed_url.path[1:]
+        db_hostname = parsed_url.hostname
+        db_port = parsed_url.port
+
+        try:
+            self.connection = psycopg2.connect(
+                user=db_username,
+                password=db_password,
+                host=db_hostname,
+                port=db_port,
+                database=db_name,
+            )
+            print("Connection to the database established successfully.")
+        except (OperationalError, DatabaseError) as error:
+            print(f"Error connecting to the database: {error}")
+
+    def close_database_connection(self):
+        if self.connection:
+            self.connection.close()
+            print("PostgreSQL connection is closed.")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         if self._hub_connection is not None:
             self._hub_connection.stop()
+        self.close_database_connection()
 
     def start(self):
         """Start Oxygen CS."""
         self.setup_sensor_hub()
         self._hub_connection.start()
         print("Press CTRL+C to exit.")
-        while True:
-            time.sleep(2)
+        try:
+            while True:
+                time.sleep(2)
+        except KeyboardInterrupt:
+            print("Application stopped by user.")
 
     def setup_sensor_hub(self):
         """Configure hub connection and subscribe to sensor data events."""
@@ -66,10 +105,15 @@ class App:
 
     def take_action(self, temperature):
         """Take action to HVAC depending on current temperature."""
+        action = None
         if float(temperature) >= float(self.t_max):
-            self.send_action_to_hvac("TurnOnAc")
+            action = "TurnOnAc"
         elif float(temperature) <= float(self.t_min):
-            self.send_action_to_hvac("TurnOnHeater")
+            action = "TurnOnHeater"
+
+        if action:
+            self.send_action_to_hvac(action)
+            self.log_action(f"Action taken: {action} due to temperature: {temperature}")
 
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
@@ -77,16 +121,37 @@ class App:
         details = json.loads(r.text)
         print(details, flush=True)
 
+    def log_action(self, content):
+        """Log actions to the database."""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+                INSERT INTO hvac_logs (content)
+                VALUES (%s);
+            """
+            cursor.execute(query, (content,))
+            self.connection.commit()
+            cursor.close()
+            print(f"Log saved to database: {content}")
+        except (OperationalError, DatabaseError) as error:
+            print(f"Error logging action to the database: {error}")
+
     def save_event_to_database(self, timestamp, temperature):
         """Save sensor data into database."""
         try:
-            # To implement
-            pass
-        except requests.exceptions.RequestException as e:
-            # To implement
-            pass
+            cursor = self.connection.cursor()
+            query = """
+                INSERT INTO hvac_data (date_received, temperature)
+                VALUES (%s, %s);
+            """
+            cursor.execute(query, (timestamp, temperature))
+            self.connection.commit()
+            cursor.close()
+            print(f"Data saved to database: {timestamp} - {temperature}")
+        except (OperationalError, DatabaseError) as error:
+            print(f"Error saving data to the database: {error}")
 
 
 if __name__ == "__main__":
-    app = App()
-    app.start()
+    with App() as app:
+        app.start()

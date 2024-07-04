@@ -1,4 +1,3 @@
-## To implement
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
@@ -18,8 +17,11 @@ repos:
           [
             "-rn", # Only display messages
             "-sn", # Don't display the score
-            "--disable=C0114,C0115,C0116,R0903", # Remove some checks
+            "--disable=C0114,C0115,C0116,R0903,R0902,W0718,E0401", # Remove some checks, including import errors
           ]
+        env:
+          - name: PYTHONPATH
+            value: "src" # Adjust the PYTHONPATH to include the src directory
 -   repo: local
     hooks:
     -   id: unittest

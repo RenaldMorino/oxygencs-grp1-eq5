@@ -22,7 +22,7 @@ pipenv install -d
 Install the pre-commit hook to lint and format commits :
 
 ```bash
-pipenv pre-commit install
+pipenv run pre-commit install
 ```
 
 if the `pipenv` command does not work, you can try with these commands instead :
@@ -37,7 +37,7 @@ On linux, the default python3 path is : `/usr/bin/python3`
 
 ## Setup
 
-You need to setup the following variables inside `src/.env` file:
+You need to setup the following variables inside `/.env` file:
 
 - HOST: The host of the sensor hub and HVAC system.
 - TOKEN: The token for authenticating requests.
