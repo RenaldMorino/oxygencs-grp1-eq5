@@ -7,7 +7,6 @@ name = "pypi"
 requests = "*"
 signalrcore = "*"
 python-dotenv = "*"
-psycopg2 = "*"
 
 [dev-packages]
 pre-commit = "*"
