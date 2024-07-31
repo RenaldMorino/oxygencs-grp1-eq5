@@ -35,15 +35,19 @@ python3 -m pipenv --python /the/python3/binary/location run pre-commit install
 
 On linux, the default python3 path is : `/usr/bin/python3`
 
+> Note: If nothing worked, try to use `venv` to create a virtual environnement, install pipenv with `pip install pipenv`, then run `pipenv install -d`. <br><br>On Visual Studio code, using `Ctrl+shift+p`, you can find the command "Python: Select Interpreter" and create a new virtual environnement using venv or Conda.
+
 ## Setup
 
-You need to setup the following variables inside `/.env` file:
+Create a `.env` file at the root of `oxygencs-grp1-eq5`
 
-- HOST: The host of the sensor hub and HVAC system.
-- TOKEN: The token for authenticating requests.
-- T_MAX: The maximum allowed temperature.
-- T_MIN: The minimum allowed temperature.
-- DATABASE_URL: The database connection URL.
+In this `.env` file, you need to setup the following variables:
+
+- `HOST`: The host of the sensor hub and HVAC system.
+- `TOKEN`: The token for authenticating requests.
+- `T_MAX`:  maximum allowed temperature.
+- `T_MIN`: The minimum allowed temperature.
+- `DATABASE_URL`: The database connection URL.<br>It should be formatted like this: `postgresql://username:password@ip:port/db-name`
 
 ## Running the Program
 
