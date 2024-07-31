@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: oxygencs-config-map
 data:
-  host: "http://159.203.50.162/"
-  t_min: "20"
+  host: "http://159.203.50.162"
+  t_min: "10"
   t_max: "30"
