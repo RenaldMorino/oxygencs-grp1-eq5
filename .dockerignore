@@ -9,4 +9,6 @@ README.md
 
 .git/
 .github/
+.venv/
+infra/
 test/
