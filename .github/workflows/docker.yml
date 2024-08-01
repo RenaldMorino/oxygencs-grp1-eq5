@@ -43,3 +43,20 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/oxygencs-grp1-eq5:latest
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Set up Kubernetes
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'
+      - name: Create dot kube folder
+        run: |
+          mkdir -p $HOME/.kube
+      - name: Setuping Kubernetes config
+        run: |
+         echo "${{ secrets.KUBECONF }}" > $HOME/.kube/config
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f infra/configMap.yaml
+          kubectl apply -f infra/deployment.yaml
+          kubectl apply -f infra/secret.yaml
+      - name: Restart Kubernetes to get new image
+        run: kubectl rollout restart deployment oxygencs-deployment
