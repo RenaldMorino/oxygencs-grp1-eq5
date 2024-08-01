@@ -57,6 +57,6 @@ jobs:
         run: |
           kubectl apply -f infra/configMap.yaml
           kubectl apply -f infra/deployment.yaml
-          kubectl apply -f infra/secret.yaml
+          kubectl apply -f infra/secrets.yaml
       - name: Restart Kubernetes to get new image
         run: kubectl rollout restart deployment oxygencs-deployment
