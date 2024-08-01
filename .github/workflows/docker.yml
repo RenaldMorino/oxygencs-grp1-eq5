@@ -52,11 +52,9 @@ jobs:
           mkdir -p $HOME/.kube
       - name: Setuping Kubernetes config
         run: |
-         echo "${{ secrets.KUBECONF }}" > $HOME/.kube/config
+          echo ${{ secrets.KUBECONF }} | base64 --decode > $HOME/.kube/config
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f infra/configMap.yaml
-          kubectl apply -f infra/deployment.yaml
-          kubectl apply -f infra/secrets.yaml
+          kubectl apply -f infra/
       - name: Restart Kubernetes to get new image
         run: kubectl rollout restart deployment oxygencs-deployment
