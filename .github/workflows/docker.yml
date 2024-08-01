@@ -52,7 +52,7 @@ jobs:
           mkdir -p $HOME/.kube
       - name: Setuping Kubernetes config
         run: |
-          echo ${{ secrets.KUBECONF }} | base64 --decode > $HOME/.kube/config
+          echo "${{ secrets.KUBECONF }}" | base64 --decode > $HOME/.kube/config
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f infra/
