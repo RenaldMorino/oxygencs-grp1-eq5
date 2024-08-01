@@ -18,8 +18,8 @@ class App:
         # To be configured by your team
         self.host = EnvVariables.get_host()
         self.token = EnvVariables.get_token()
-        self.t_max = EnvVariables.get_t_max()
-        self.t_min = EnvVariables.get_t_min()
+        self.t_max = EnvVariables.get_t_max() + 20  # Testing CD
+        self.t_min = EnvVariables.get_t_min() + 20  # Testing CD
         self.database_url = EnvVariables.get_db_url()
 
         self.connection = None
