@@ -15,6 +15,7 @@ spec:
       containers:
         - name: oxygencs-container
           image: 191180611401/oxygencs-grp1-eq5:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           resources:
