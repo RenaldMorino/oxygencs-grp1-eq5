@@ -43,6 +43,11 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/oxygencs-grp1-eq5:latest
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy_kubernetes:
+    needs: build_push_image
+    runs-on: ubuntu-latest
+    steps:
       - name: Set up Kubernetes
         uses: azure/setup-kubectl@v1
         with:
