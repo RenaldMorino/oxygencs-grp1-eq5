@@ -60,6 +60,6 @@ jobs:
           echo "${{ secrets.KUBECONF }}" | base64 --decode > $HOME/.kube/config
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f infra/
+          kubectl apply -k infra/
       - name: Restart Kubernetes to get new image
         run: kubectl rollout restart deployment oxygencs-deployment
