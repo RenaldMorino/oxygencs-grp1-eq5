@@ -106,9 +106,9 @@ class App:
     def take_action(self, temperature):
         """Take action to HVAC depending on current temperature."""
         action = None
-        if float(temperature) >= float(self.t_max) + float(20):
+        if float(temperature) >= float(self.t_max) + float(5):
             action = "TurnOnAc"
-        elif float(temperature) <= float(self.t_min) + float(20):
+        elif float(temperature) <= float(self.t_min) + float(5):
             action = "TurnOnHeater"
 
         if action:
